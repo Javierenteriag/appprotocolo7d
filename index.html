@@ -4,69 +4,1051 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Activador de Abundancia 7D</title>
+    <!-- Tailwind CSS para base de diseño veloz -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .font-sans { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+        
+        /* Ocultar barras de scroll estéticamente */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Ciclo Respiración 4-7-8 (19 segundos totales por ciclo) */
+        @keyframes breath-4-7-8 {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+            21% { transform: scale(1.4); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); } /* Inhalar 4s */
+            58% { transform: scale(1.4); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); } /* Retener 7s */
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }  /* Exhalar 8s */
+        }
+        /* Ciclo Respiración Cuadrada (16 segundos totales por ciclo) */
+        @keyframes breath-square {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+            25% { transform: scale(1.4); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); } /* Inhalar 4s */
+            50% { transform: scale(1.4); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); } /* Retener 4s */
+            75% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }  /* Exhalar 4s */
+        }
+        /* Ciclo Respiración 4-6 (10 segundos totales por ciclo) */
+        @keyframes breath-4-6 {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+            40% { transform: scale(1.4); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); } /* Inhalar 4s */
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }  /* Exhalar 6s */
+        }
+        /* Ciclo Suspiro Cíclico (12 segundos totales por ciclo) */
+        @keyframes breath-sigh {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+            35% { transform: scale(1.35); box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); } /* Inhala profunda */
+            45% { transform: scale(1.45); box-shadow: 0 0 35px rgba(99, 102, 241, 0.7); } /* Inhala corta extra */
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }  /* Exhalar suspiro */
+        }
+
+        .animate-breath-4-7-8 { animation: breath-4-7-8 19s infinite ease-in-out; }
+        .animate-breath-square { animation: breath-square 16s infinite ease-in-out; }
+        .animate-breath-4-6 { animation: breath-4-6 10s infinite ease-in-out; }
+        .animate-breath-sigh { animation: breath-sigh 12s infinite ease-in-out; }
+
+        /* Efecto 3D de botones independientes flotantes de la botonera inferior */
+        .btn-nav-3d {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 38, 0.85);
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.3), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .btn-nav-3d:active {
+            transform: scale(0.95);
+        }
+        /* Botón Día Activo (Glow azul suave) */
+        .btn-nav-3d.active-dia {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 
+                0 0 15px rgba(59, 130, 246, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            color: #60a5fa;
+        }
+        /* Botón Audios Activo (Glow violeta) */
+        .btn-nav-3d.active-audios {
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 
+                0 0 15px rgba(139, 92, 246, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            color: #c084fc;
+        }
+        /* Botón IA Activo (Glow naranja) */
+        .btn-nav-3d.active-ia {
+            background: rgba(217, 119, 6, 0.15);
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 
+                0 0 15px rgba(245, 158, 11, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            color: #fbbf24;
+        }
     </style>
 </head>
 <body class="font-sans bg-zinc-950 text-gray-900 flex justify-center items-center min-h-screen overflow-hidden">
 
-    <div class="relative w-full max-w-md h-[94vh] sm:h-[840px] bg-zinc-900 rounded-[48px] p-3 shadow-2xl border-4 border-zinc-800 flex flex-col overflow-hidden">
+    <!-- CONTENEDOR MAQUETA DE IPHONE RESPONSIVA -->
+    <div class="relative w-full max-w-md h-[95vh] sm:h-[840px] bg-zinc-900 rounded-[48px] p-3 shadow-2xl border-4 border-zinc-800 flex flex-col overflow-hidden transition-all duration-500">
         
-        <!-- Pantalla Home con tu Logo -->
-        <div id="pantalla-home" class="absolute inset-0 bg-[#c5a85c] z-50 flex flex-col justify-between p-8 text-center transition-all duration-500 overflow-y-auto no-scrollbar">
-            <div class="flex flex-col items-center mt-16 space-y-6">
-                <div class="w-48 h-48 flex items-center justify-center">
-                    <img src="https://i.postimg.cc/9F2CgNmg/Logo-Activador-Abundancia-removebg-preview.png" alt="Logo Activador de Abundancia" class="w-full h-full object-contain">
-                </div>
-            </div>
-            <div class="my-auto px-2">
-                <p class="text-[19px] font-bold text-[#1c3c26] leading-relaxed">Los hábitos son acciones diarias que, acumuladas, logran un impacto significativo.</p>
-            </div>
-            <button onclick="document.getElementById('pantalla-home').classList.add('hidden')" class="w-full py-4 bg-[#1c3c26] text-white rounded-full font-bold uppercase tracking-widest hover:bg-[#152e1d] transition-all mb-4">
-                Empezar
-            </button>
+        <!-- ISLA DINÁMICA DE IPHONE -->
+        <div class="absolute top-5 left-1/2 transform -translate-x-1/2 w-28 h-6 bg-black rounded-full z-50 flex items-center justify-between px-3">
+            <div class="w-1.5 h-1.5 bg-zinc-800 rounded-full"></div>
+            <div class="w-2.5 h-2.5 bg-zinc-900 rounded-full border border-zinc-800"></div>
         </div>
 
-        <!-- Pantalla Interna -->
-        <div class="w-full h-full rounded-[38px] overflow-hidden flex flex-col bg-white">
-            <header class="p-5 pt-10 border-b border-gray-100">
-                <span class="text-[10px] uppercase tracking-widest text-amber-600 font-bold block">Enfoque Diario</span>
-                <h2 class="text-xl font-black text-gray-900">Día 1 de 7</h2>
+        <!-- NOTIFICACIÓN DE ALERTAS INTERNA PREMIUM -->
+        <div id="toast-notification" class="absolute top-16 left-6 right-6 bg-black/90 backdrop-blur-md border border-amber-500/30 text-white text-xs px-4 py-3 rounded-2xl text-center shadow-lg transition-all duration-300 transform -translate-y-20 opacity-0 z-50">
+            <span id="toast-message">Notificación</span>
+        </div>
+
+        <!-- PANTALLA INTERNA DEL DISPOSITIVO -->
+        <div class="w-full h-full rounded-[38px] overflow-hidden relative flex flex-col bg-gray-50 transition-colors duration-500" id="pantalla-interna">
+
+            <!-- ============================================== -->
+            <!-- 1. PANTALLA HOME CON TU LOGO OFICIAL -->
+            <!-- ============================================== -->
+            <div id="pantalla-home" class="absolute inset-0 bg-[#c5a85c] z-50 flex flex-col justify-between p-8 text-center transition-all duration-500 overflow-y-auto no-scrollbar">
+                <div class="flex flex-col items-center mt-16 space-y-6">
+                    <div class="w-48 h-48 flex items-center justify-center">
+                        <img src="https://i.postimg.cc/9F2CgNmg/Logo-Activador-Abundancia-removebg-preview.png" alt="Logo Activador de Abundancia" class="w-full h-full object-contain drop-shadow-lg">
+                    </div>
+                </div>
+                <div class="my-auto px-2">
+                    <p class="text-[19px] font-bold text-[#1c3c26] leading-relaxed">
+                        Los hábitos son acciones diarias que, acumuladas, logran un impacto significativo.
+                    </p>
+                </div>
+                <button onclick="cerrarHome()" class="w-full py-4 bg-[#1c3c26] hover:bg-[#152e1d] text-white rounded-full font-bold uppercase tracking-widest transition-all mb-4 active:scale-95 shadow-md">
+                    Empezar
+                </button>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- CABEZAL (Selector de Días y Títulos) -->
+            <!-- ============================================== -->
+            <header class="p-5 pt-10 flex justify-between items-center bg-white border-b border-gray-100 z-10 transition-colors duration-500 shrink-0" id="app-header">
+                <div>
+                    <span class="text-[10px] uppercase tracking-widest text-amber-600 font-bold block animate-pulse" id="header-subtitle">Enfoque Diario</span>
+                    <h2 class="text-xl font-black text-gray-900" id="current-day-title">Día 1 de 7</h2>
+                </div>
+                <!-- Botón de Cambio de Fase (Día/Noche) -->
+                <button onclick="toggleFase()" id="btn-fase" class="px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center space-x-1">
+                    <span>Ir a la Noche</span><span>🌙</span>
+                </button>
             </header>
-            
-            <main class="flex-grow p-5 space-y-6 overflow-y-auto no-scrollbar">
-                <!-- Tarjeta de Enfoque -->
-                <div class="bg-amber-50 p-4 rounded-2xl border-l-4 border-amber-500">
-                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Activación Mental</p>
-                    <p class="text-sm italic text-gray-700">"El enfoque de hoy determina tu éxito de mañana."</p>
+
+            <!-- SELECTOR RÁPIDO DE DÍAS -->
+            <div class="bg-white border-b border-gray-100 p-3 flex justify-between overflow-x-auto no-scrollbar shrink-0 z-10" id="selector-dias-container">
+                <div class="flex space-x-2 mx-auto font-bold">
+                    <button onclick="cambiarDia(1)" id="selector-d1" class="w-8 h-8 rounded-full text-xs bg-amber-500 text-white transition-all shadow-sm">1</button>
+                    <button onclick="cambiarDia(2)" id="selector-d2" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">2</button>
+                    <button onclick="cambiarDia(3)" id="selector-d3" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">3</button>
+                    <button onclick="cambiarDia(4)" id="selector-d4" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">4</button>
+                    <button onclick="cambiarDia(5)" id="selector-d5" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">5</button>
+                    <button onclick="cambiarDia(6)" id="selector-d6" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">6</button>
+                    <button onclick="cambiarDia(7)" id="selector-d7" class="w-8 h-8 rounded-full text-xs bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all">7</button>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- CONTENIDO CENTRAL CON SCROLL INDEPENDIENTE -->
+            <!-- ============================================== -->
+            <main class="flex-grow overflow-y-auto p-5 no-scrollbar flex flex-col space-y-6" id="scroll-main">
+                
+                <!-- ================= SECCIÓN 1: RETO 7D ================= -->
+                <div id="seccion-reto" class="space-y-6">
+                    
+                    <!-- FASE DÍA (Claro) -->
+                    <div id="contenido-dia" class="space-y-6">
+                        <!-- Tarjeta de Enfoque con saltos seguros -->
+                        <div class="bg-amber-50/70 border-l-4 border-amber-500 p-4 rounded-r-2xl">
+                            <p class="text-xs text-amber-700/80 font-bold uppercase tracking-wider mb-1">Activación Mental</p>
+                            <p class="text-sm italic font-medium text-gray-700" id="frase-dia-texto">"El enfoque de hoy determina tu éxito de mañana."</p>
+                            <div class="mt-2.5 pt-2 border-t border-amber-500/10 text-xs font-semibold text-amber-800" id="accion-dia-texto">
+                                Acción: Escribe tus metas antes de salir.
+                            </div>
+                        </div>
+
+                        <!-- Agradecimientos del día -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block">¿Por qué estás agradecido hoy? (Escribe 3 cosas)</label>
+                            <div class="space-y-2">
+                                <input type="text" id="agrad-1" placeholder="1. Hoy agradezco por..." class="w-full bg-white border border-gray-100 rounded-2xl p-3.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-sm transition-all">
+                                <input type="text" id="agrad-2" placeholder="2. También agradezco..." class="w-full bg-white border border-gray-100 rounded-2xl p-3.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-sm transition-all">
+                                <input type="text" id="agrad-3" placeholder="3. Y me siento feliz por..." class="w-full bg-white border border-gray-100 rounded-2xl p-3.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-sm transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Checklist Diario Modificado a 2 líneas -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Acciones de Enfoque</label>
+                            
+                            <label class="flex items-start space-x-3 bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer shadow-sm active:scale-98 transition-all">
+                                <input type="checkbox" id="chk-ejercicio" class="w-5 h-5 rounded-full text-amber-500 focus:ring-0 border-gray-200 mt-0.5">
+                                <div class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                    Realizar 20 minutos de ejercicio físico.<br>
+                                    <span class="opacity-70 text-[10px] font-normal">Activa el cuerpo y eleva tus niveles de abundancia.</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer shadow-sm active:scale-98 transition-all">
+                                <input type="checkbox" id="chk-desconexion" class="w-5 h-5 rounded-full text-amber-500 focus:ring-0 border-gray-200 mt-0.5">
+                                <div class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                    Desconectarte de internet por 10 minutos.<br>
+                                    <span class="opacity-70 text-[10px] font-normal">Aprovecha para llamar a alguien o leer tu libro.</span>
+                                </div>
+                            </label>
+
+                            <!-- Nueva tarea de Caridad en dos líneas -->
+                            <label class="flex items-start space-x-3 bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer shadow-sm active:scale-98 transition-all">
+                                <input type="checkbox" id="chk-caridad" class="w-5 h-5 rounded-full text-amber-500 focus:ring-0 border-gray-200 mt-0.5">
+                                <div class="text-xs text-gray-700 font-semibold leading-relaxed">
+                                    Realizar una obra de caridad.<br>
+                                    <span class="opacity-85 text-[10px] text-emerald-600 font-extrabold block mt-0.5">Donar o ayudar a alguien.<br>Ayudar es sinónimo de abundancia: tienes tanto que te sobra.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- FASE NOCHE (Oscuro Premium) -->
+                    <div id="contenido-noche" class="hidden space-y-6">
+                        
+                        <!-- Calificación de Día con Emojis y Textos Debajo -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block text-center">Califica tu día de hoy:</label>
+                            <div class="grid grid-cols-5 gap-1.5" id="feel-selectors">
+                                <button onclick="setCalificacion('muy-mal')" id="feel-muy-mal" class="flex flex-col items-center p-2 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 transition-all hover:bg-zinc-800">
+                                    <span class="text-xl">😢</span>
+                                    <span class="text-[9px] text-gray-500 font-extrabold mt-1 truncate w-full text-center">Muy mal</span>
+                                </button>
+                                <button onclick="setCalificacion('mal')" id="feel-mal" class="flex flex-col items-center p-2 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 transition-all hover:bg-zinc-800">
+                                    <span class="text-xl">🙁</span>
+                                    <span class="text-[9px] text-gray-500 font-extrabold mt-1 truncate w-full text-center">Mal</span>
+                                </button>
+                                <button onclick="setCalificacion('normal')" id="feel-normal" class="flex flex-col items-center p-2 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 transition-all hover:bg-zinc-800">
+                                    <span class="text-xl">😐</span>
+                                    <span class="text-[9px] text-gray-500 font-extrabold mt-1 truncate w-full text-center">Normal</span>
+                                </button>
+                                <button onclick="setCalificacion('bien')" id="feel-bien" class="flex flex-col items-center p-2 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 transition-all hover:bg-zinc-800">
+                                    <span class="text-xl">🙂</span>
+                                    <span class="text-[9px] text-gray-500 font-extrabold mt-1 truncate w-full text-center">Bien</span>
+                                </button>
+                                <button onclick="setCalificacion('excelente')" id="feel-excelente" class="flex flex-col items-center p-2 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 transition-all hover:bg-zinc-800">
+                                    <span class="text-xl">🤩</span>
+                                    <span class="text-[9px] text-gray-500 font-extrabold mt-1 truncate w-full text-center">Excelente</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cita Inspiradora de Noche -->
+                        <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-2xl">
+                            <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-1">Sintonización de Cierre</p>
+                            <p class="text-sm italic font-medium text-gray-300" id="frase-noche-texto">"Agradece lo vivido hoy y libera la mente para descansar."</p>
+                        </div>
+
+                        <!-- Plan para Mañana -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Escribe 3 cosas importantes para hacer mañana:</label>
+                            <div class="space-y-2">
+                                <input type="text" id="manana-1" placeholder="1. Acción primordial de mañana..." class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5 text-xs font-semibold text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 shadow-sm transition-all">
+                                <input type="text" id="manana-2" placeholder="2. Siguiente meta prioritaria..." class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5 text-xs font-semibold text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 shadow-sm transition-all">
+                                <input type="text" id="manana-3" placeholder="3. Meta menor de cierre..." class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5 text-xs font-semibold text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 shadow-sm transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Ritual de Respiración Consciente Inteligente -->
+                        <div class="bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl flex flex-col items-center text-center space-y-4">
+                            <div>
+                                <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider block mb-1">Ritual de Respiración Consciente</span>
+                                <h4 class="text-xs font-extrabold text-white" id="breath-title">Respiración 4-7-8 (La técnica relajante)</h4>
+                                <p class="text-[10px] text-gray-400 mt-1" id="breath-desc">Baja la frecuencia cardíaca y libera tensiones.</p>
+                            </div>
+
+                            <!-- Esfera Visual de Respiración Sincronizada -->
+                            <div class="relative w-20 h-20 flex items-center justify-center">
+                                <div id="breathing-ring" class="absolute inset-0 rounded-full bg-indigo-500/10 border-2 border-indigo-400/40 animate-breath-4-7-8"></div>
+                                <div class="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[9px] font-black tracking-widest z-10 shadow-lg shadow-indigo-600/30">
+                                    RESPIRA
+                                </div>
+                            </div>
+
+                            <!-- Pasos explicativos -->
+                            <div class="text-left text-[11px] text-gray-400 space-y-1 w-full max-w-xs mx-auto border-t border-zinc-800 pt-3" id="breath-steps">
+                                <div>• Inhala por la nariz contando hasta 4.</div>
+                                <div>• Retén el aire contando hasta 7.</div>
+                                <div>• Exhala lentamente por la boca contando hasta 8.</div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <!-- Checklist -->
-                <div class="space-y-3">
-                    <label class="text-xs font-bold text-gray-400 uppercase">Acciones de Enfoque</label>
-                    <label class="flex items-start space-x-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50">
-                        <input type="checkbox" class="w-5 h-5 text-amber-500 mt-0.5 rounded">
-                        <span class="text-xs font-semibold text-gray-700">Realizar 20 minutos de ejercicio físico.</span>
-                    </label>
-                    <label class="flex items-start space-x-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50">
-                        <input type="checkbox" class="w-5 h-5 text-amber-500 mt-0.5 rounded">
-                        <span class="text-xs font-semibold text-gray-700">Desconectarte de internet por 10 min.</span>
-                    </label>
+                <!-- ================= SECCIÓN 2: AUDIOS ================= -->
+                <div id="seccion-audios" class="hidden space-y-6">
+                    
+                    <!-- REPRODUCTOR INTEGRADO DE AUDIOLIBRO (Systeme.io) -->
+                    <div class="bg-gradient-to-br from-emerald-950 to-zinc-900 border border-emerald-900/40 p-5 rounded-3xl text-white shadow-xl relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl"></div>
+                        <span class="text-[9px] uppercase tracking-widest font-extrabold text-emerald-400 block mb-1">Enlace Destacado</span>
+                        <h3 class="text-base font-black leading-tight">Audiolibro & Música de Abundancia</h3>
+                        <p class="text-[11px] text-gray-400 mt-1 leading-relaxed">Conéctate a tu material premium de reprogramación mental y crecimiento financiero.</p>
+                        
+                        <div class="mt-4 flex flex-col space-y-2">
+                            <!-- Abrir en Safari o Chrome de Fondo -->
+                            <a href="https://javierenteria.systeme.io/audio" target="_blank" class="py-3 bg-emerald-600 hover:bg-emerald-500 text-center rounded-2xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-1.5">
+                                <span>Abrir en Safari/Chrome</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
+                                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
+                                </svg>
+                            </a>
+                            <!-- Vista Rápida en Iframe de la App -->
+                            <button onclick="toggleInAppBrowser(true)" class="py-3 bg-zinc-800 hover:bg-zinc-700 text-center rounded-2xl text-xs font-bold transition-all border border-zinc-700">
+                                Vista Rápida en App
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Frecuencias Binaurales (Web Audio API - Sonido Real) -->
+                    <div class="space-y-3">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Ondas Binaurales Sintonizadoras</label>
+                        
+                        <div class="space-y-2">
+                            <!-- Track 1: Frecuencia Theta -->
+                            <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center text-lg text-emerald-600">🎧</div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-gray-800">Frecuencia Theta (7.83Hz - Schumann)</h4>
+                                        <span class="text-[10px] text-gray-400">Reprogramación subconsciente</span>
+                                    </div>
+                                </div>
+                                <button onclick="toggleAudioGen('theta', 7.83)" id="btn-audio-theta" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-xs text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-all font-bold">▶</button>
+                            </div>
+
+                            <!-- Track 2: Sintonizador Alfa -->
+                            <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-lg text-blue-600">🌊</div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-gray-800">Sintonizador Alfa (10.5Hz)</h4>
+                                        <span class="text-[10px] text-gray-400">Enfoque mental y calma estratégica</span>
+                                    </div>
+                                </div>
+                                <button onclick="toggleAudioGen('alfa', 10.5)" id="btn-audio-alfa" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all font-bold">▶</button>
+                            </div>
+
+                            <!-- Track 3: Frecuencia Solfeggio 528Hz -->
+                            <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-full bg-purple-50 flex items-center justify-center text-lg text-purple-600">✨</div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-gray-800">Frecuencia Solfeggio (528Hz)</h4>
+                                        <span class="text-[10px] text-gray-400">Frecuencia vibracional de abundancia</span>
+                                    </div>
+                                </div>
+                                <button onclick="toggleAudioGen('solfeggio', 528)" id="btn-audio-solfeggio" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-xs text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-all font-bold">▶</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- ================= SECCIÓN 3: MENTE IA ================= -->
+                <div id="seccion-ia" class="hidden flex-grow flex flex-col justify-between min-h-[400px]">
+                    
+                    <!-- Onboarding del Nombre de Usuario de la IA -->
+                    <div id="ia-onboarding" class="flex-grow flex flex-col justify-center items-center text-center p-4 space-y-4">
+                        <div class="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center text-2xl">🧠</div>
+                        <div>
+                            <h3 class="text-sm font-extrabold text-gray-800">Activador de Abundancia en 7D</h3>
+                            <p class="text-xs text-gray-400 mt-1 max-w-[240px] mx-auto">Hola, antes de comenzar nuestro viaje de reprogramación financiera, ¿cómo te llamas?</p>
+                        </div>
+                        <div class="w-full max-w-xs flex space-x-2">
+                            <input type="text" id="ia-name-input" placeholder="Tu nombre..." class="flex-grow bg-white border border-gray-100 rounded-xl p-3.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 shadow-sm">
+                            <button onclick="guardarNombreIA()" class="px-5 bg-[#1c3c26] text-white font-bold text-xs rounded-xl hover:bg-[#152e1d] transition-all">Guardar</button>
+                        </div>
+                    </div>
+
+                    <!-- Chat de Conversación Completa con el Coach de Abundancia -->
+                    <div id="ia-chat-interface" class="hidden flex-grow flex flex-col justify-between">
+                        <!-- Historial de mensajes -->
+                        <div id="chat-messages" class="flex-grow overflow-y-auto space-y-3 pr-2 max-h-[320px] text-xs no-scrollbar">
+                            <!-- Mensajes cargados dinámicamente -->
+                        </div>
+
+                        <!-- Botones Rápidos de Comandos Técnicos -->
+                        <div class="grid grid-cols-4 gap-1.5 pt-3 pb-2 border-t border-gray-100 shrink-0">
+                            <button onclick="enviarComando('/comenzar')" class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-[9px] font-bold transition-all">/comenzar</button>
+                            <button onclick="enviarComando('/siguiente')" class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-[9px] font-bold transition-all">/siguiente</button>
+                            <button onclick="enviarComando('/progreso')" class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-[9px] font-bold transition-all">/progreso</button>
+                            <button onclick="enviarComando('/ayuda')" class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-[9px] font-bold transition-all">/ayuda</button>
+                        </div>
+
+                        <!-- Campo para Enviar Mensajes -->
+                        <div class="flex space-x-2 shrink-0">
+                            <input type="text" id="chat-input" placeholder="Escribe un mensaje o comando..." class="flex-grow bg-white border border-gray-100 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 shadow-sm" onkeydown="checkKey(event)">
+                            <button onclick="enviarMensajeChat()" class="p-3 bg-[#1c3c26] hover:bg-[#152e1d] text-white rounded-xl transition-all shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
             </main>
 
-            <!-- Navegación -->
-            <nav class="p-4 bg-gray-50 border-t border-gray-100 shrink-0">
-                <div class="flex justify-around bg-white p-2 rounded-2xl border border-gray-200 shadow-inner">
-                    <button class="px-4 py-2 text-xs font-bold bg-amber-500 text-white rounded-xl">📅 Reto</button>
-                    <button class="px-4 py-2 text-xs font-bold text-gray-400 hover:text-gray-900">🎧 Audios</button>
-                    <button class="px-4 py-2 text-xs font-bold text-gray-400 hover:text-gray-900">🤖 IA</button>
+            <!-- ============================================== -->
+            <!-- BOTÓN DE AVANCE (Oculto dinámicamente en IA) -->
+            <!-- ============================================== -->
+            <div class="p-5 pt-0 bg-white border-t border-gray-100 shrink-0 z-10 transition-colors duration-500" id="app-footer-button">
+                <button id="btn-siguiente" onclick="avanzarPaso()" class="w-full py-4 bg-gray-900 text-white rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-gray-800 active:scale-98 transition-all shadow-lg">
+                    Completar Día ☀️
+                </button>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- MENÚ DE NAVEGACIÓN INFERIOR (3D PREMIUM SEGÚN LA IMAGEN) -->
+            <!-- ============================================== -->
+            <nav class="p-4 bg-white border-t border-gray-100 shrink-0 z-10 transition-colors duration-500" id="nav-bar-container">
+                <div class="flex justify-around space-x-2 p-1 rounded-2xl bg-zinc-950 shadow-inner" id="nav-pill-wrapper">
+                    <!-- Botón Reto (Día) -->
+                    <button onclick="cambiarSeccion('reto')" id="nav-reto" class="btn-nav-3d active-dia flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5">
+                        <span class="text-sm">☀️</span>
+                        <span>Día</span>
+                    </button>
+                    <!-- Botón Audios -->
+                    <button onclick="cambiarSeccion('audios')" id="nav-audios" class="btn-nav-3d flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5 text-gray-400">
+                        <span class="text-sm">🎧</span>
+                        <span>Audios</span>
+                    </button>
+                    <!-- Botón IA -->
+                    <button onclick="cambiarSeccion('ia')" id="nav-ia" class="btn-nav-3d flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5 text-gray-400">
+                        <span class="text-sm">🧠</span>
+                        <span>IA</span>
+                    </button>
                 </div>
             </nav>
+
         </div>
+
+        <!-- ============================================== -->
+        <!-- OVERLAY NAVEGADOR WEB (Para la música de Systeme.io) -->
+        <!-- ============================================== -->
+        <div id="inapp-browser" class="absolute inset-x-3 bottom-3 top-16 bg-white rounded-t-[32px] z-50 transform translate-y-full transition-all duration-500 shadow-2xl border-t border-gray-200 flex flex-col overflow-hidden">
+            <div class="bg-gray-100 p-3.5 border-b border-gray-200 flex justify-between items-center shrink-0">
+                <div class="flex space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                    <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                    <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                </div>
+                <span class="text-[10px] text-gray-400 font-bold truncate max-w-[180px]">javierenteria.systeme.io</span>
+                <button onclick="toggleInAppBrowser(false)" class="text-xs font-black text-gray-500 hover:text-gray-800">Cerrar</button>
+            </div>
+            <div class="flex-grow w-full h-full bg-gray-50">
+                <iframe src="https://javierenteria.systeme.io/audio" class="w-full h-full border-0"></iframe>
+            </div>
+        </div>
+
     </div>
+
+    <!-- LÓGICA DE PROGRAMACIÓN INTERACTIVA -->
+    <script>
+        const datosReto = {
+            1: {
+                fraseDia: "El enfoque de hoy determina tu éxito de mañana.",
+                accionDia: "Acción: Escribe tus metas antes de salir.",
+                fraseNoche: "Agradece lo vivido hoy y libera la mente para descansar.",
+                tecnicaBreathing: 1
+            },
+            2: {
+                fraseDia: "La riqueza mental precede a la abundancia material.",
+                accionDia: "Acción: Observa las oportunidades del día, no las carencias.",
+                fraseNoche: "Toma conciencia de tu prosperidad interior y duerme en paz.",
+                tecnicaBreathing: 2
+            },
+            3: {
+                fraseDia: "Cada obstáculo de hoy es una solución en potencia.",
+                accionDia: "Acción: Transforma un pensamiento limitante en estratégico.",
+                fraseNoche: "Desconecta la mente con tranquilidad absoluta.",
+                tecnicaBreathing: 3
+            },
+            4: {
+                fraseDia: "La generosidad de hoy expande el mañana.",
+                accionDia: "Acción: Regala una palabra honesta o una ayuda genuina.",
+                fraseNoche: "El descanso repara tus ideas creativas e instintos.",
+                tecnicaBreathing: 4
+            },
+            5: {
+                fraseDia: "El control financiero comienza administrando tus pensamientos.",
+                accionDia: "Acción: Identifica un bloqueo mental limitante.",
+                fraseNoche: "Duerme con mente de abundancia total.",
+                tecnicaBreathing: 1
+            },
+            6: {
+                fraseDia: "Tu perseverancia silenciosa hablará por ti con el tiempo.",
+                accionDia: "Acción: Haz una tarea que hayas pospuesto.",
+                fraseNoche: "Felicítate por tu esfuerzo y descansa.",
+                tecnicaBreathing: 2
+            },
+            7: {
+                fraseDia: "Cierra el ciclo con orgullo y prepárate para escalar.",
+                accionDia: "Acción: Define tu próximo gran paso estratégico.",
+                fraseNoche: "Eres más abundante de lo que eras hace 7 días.",
+                tecnicaBreathing: 3
+            }
+        };
+
+        const tecnicasBreathing = {
+            1: {
+                title: "Respiración 4-7-8 (La técnica relaxing)",
+                desc: "Ideal para bajar la frecuencia cardíaca y liberar tensiones.",
+                animation: "animate-breath-4-7-8",
+                steps: [
+                    "• Inhala por la nariz contando hasta 4.",
+                    "• Retén el aire contando hasta 7.",
+                    "• Exhala lentamente por la boca contando hasta 8."
+                ]
+            },
+            2: {
+                title: "Respiración Cuadrada (Box Breathing)",
+                desc: "Favorece la concentración y estabiliza el estado de ánimo.",
+                animation: "animate-breath-square",
+                steps: [
+                    "• Inhala durante 4 segundos.",
+                    "• Retén el aire a pulmón lleno por 4 segundos.",
+                    "• Exhala suavemente por la boca por 4 segundos.",
+                    "• Mantén los pulmones vacíos por 4 segundos."
+                ]
+            },
+            3: {
+                title: "Respiración 4-6 (Calma mental)",
+                desc: "Recomendada para frenar la agitación y la rumiación.",
+                animation: "animate-breath-4-6",
+                steps: [
+                    "• Inhala profundamente por la nariz contando hasta 4.",
+                    "• Exhala el aire por la boca de forma lenta contando hasta 6.",
+                    "• Repite el ciclo continuo durante un minuto."
+                ]
+            },
+            4: {
+                title: "Suspiro Cíclico",
+                desc: "El ejercicio más efectivo para aliviar el estrés velozmente.",
+                animation: "animate-breath-sigh",
+                steps: [
+                    "• Realiza una inhalación profunda por la nariz.",
+                    "• Justo antes de terminar, haz otra corta por la nariz.",
+                    "• Exhala lentamente dejando salir un suspiro relajante."
+                ]
+            }
+        };
+
+        // ESTADO GLOBAL DE LA APP
+        let diaActual = 1;
+        let esNoche = false;
+        let seccionActiva = 'reto';
+        let audioActivo = null;
+        let audioContext = null;
+        let oscillatorL = null;
+        let oscillatorR = null;
+        let gainNode = null;
+
+        // ESTADO MENTE IA
+        let iaNombre = '';
+        let iaProgresoDia = 1;
+        const chatLog = [];
+
+        // AL CARGAR LA APP
+        window.onload = function() {
+            cargarProgreso();
+            inicializarApp();
+        };
+
+        function cerrarHome() {
+            const home = document.getElementById('pantalla-home');
+            home.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                home.classList.add('hidden');
+            }, 500);
+            mostrarToast("¡Bienvenido al Activador de Abundancia 7D! 🌟");
+        }
+
+        function cargarProgreso() {
+            const savedDia = localStorage.getItem('abundancia_dia_actual');
+            if (savedDia) diaActual = parseInt(savedDia);
+            const savedNombre = localStorage.getItem('abundancia_ia_nombre');
+            if (savedNombre) iaNombre = savedNombre;
+        }
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast-notification');
+            const msg = document.getElementById('toast-message');
+            msg.innerText = mensaje;
+            toast.classList.remove('opacity-0', '-translate-y-20');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-20');
+            }, 3000);
+        }
+
+        function inicializarApp() {
+            cambiarDia(diaActual);
+            actualizarInterfazFase();
+            verificarOnboardingIA();
+        }
+
+        function cambiarDia(dia) {
+            diaActual = dia;
+            localStorage.setItem('abundancia_dia_actual', dia);
+
+            document.getElementById('current-day-title').innerText = `Día ${diaActual} de 7`;
+            
+            for (let i = 1; i <= 7; i++) {
+                const btn = document.getElementById(`selector-d${i}`);
+                if (i === diaActual) {
+                    btn.className = "w-8 h-8 rounded-full text-xs font-bold bg-amber-500 text-white transition-all shadow-md scale-110";
+                } else if (i < diaActual) {
+                    btn.className = "w-8 h-8 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-all";
+                } else {
+                    btn.className = "w-8 h-8 rounded-full text-xs font-bold bg-gray-100 text-gray-400 hover:bg-gray-200 transition-all";
+                }
+            }
+
+            const datos = datosReto[diaActual];
+            document.getElementById('frase-dia-texto').innerText = `"${datos.fraseDia}"`;
+            document.getElementById('accion-dia-texto').innerText = datos.accionDia;
+            document.getElementById('frase-noche-texto').innerText = `"${datos.fraseNoche}"`;
+
+            const tech = tecnicasBreathing[datos.tecnicaBreathing];
+            document.getElementById('breath-title').innerText = tech.title;
+            document.getElementById('breath-desc').innerText = tech.desc;
+            
+            const ring = document.getElementById('breathing-ring');
+            ring.className = `absolute inset-0 rounded-full bg-indigo-500/10 border-2 border-indigo-400/40 ${tech.animation}`;
+
+            const stepsContainer = document.getElementById('breath-steps');
+            stepsContainer.innerHTML = tech.steps.map(step => `<div>${step}</div>`).join('');
+
+            cargarInputsLocales();
+        }
+
+        // GUARDAR INPUTS PERSISTENTES
+        function guardarInputsLocales() {
+            const data = {
+                agrad1: document.getElementById('agrad-1').value,
+                agrad2: document.getElementById('agrad-2').value,
+                agrad3: document.getElementById('agrad-3').value,
+                chkJer: document.getElementById('chk-ejercicio').checked,
+                chkDec: document.getElementById('chk-desconexion').checked,
+                chkCar: document.getElementById('chk-caridad').checked,
+                man1: document.getElementById('manana-1').value,
+                man2: document.getElementById('manana-2').value,
+                man3: document.getElementById('manana-3').value
+            };
+            localStorage.setItem(`inputs_dia_${diaActual}`, JSON.stringify(data));
+        }
+
+        function cargarInputsLocales() {
+            const raw = localStorage.getItem(`inputs_dia_${diaActual}`);
+            if (raw) {
+                const data = JSON.parse(raw);
+                document.getElementById('agrad-1').value = data.agrad1 || '';
+                document.getElementById('agrad-2').value = data.agrad2 || '';
+                document.getElementById('agrad-3').value = data.agrad3 || '';
+                document.getElementById('chk-ejercicio').checked = data.chkJer || false;
+                document.getElementById('chk-desconexion').checked = data.chkDec || false;
+                document.getElementById('chk-caridad').checked = data.chkCar || false;
+                document.getElementById('manana-1').value = data.man1 || '';
+                document.getElementById('manana-2').value = data.man2 || '';
+                document.getElementById('manana-3').value = data.man3 || '';
+            } else {
+                document.getElementById('agrad-1').value = '';
+                document.getElementById('agrad-2').value = '';
+                document.getElementById('agrad-3').value = '';
+                document.getElementById('chk-ejercicio').checked = false;
+                document.getElementById('chk-desconexion').checked = false;
+                document.getElementById('chk-caridad').checked = false;
+                document.getElementById('manana-1').value = '';
+                document.getElementById('manana-2').value = '';
+                document.getElementById('manana-3').value = '';
+            }
+            const savedFeel = localStorage.getItem(`feel_dia_${diaActual}`);
+            if (savedFeel) setCalificacion(savedFeel);
+            else limpiarCalificaciones();
+        }
+
+        // INTERFAZ DE TRANSICIÓN DÍA/NOCHE
+        function toggleFase() {
+            guardarInputsLocales();
+            esNoche = !esNoche;
+            actualizarInterfazFase();
+        }
+
+        function actualizarInterfazFase() {
+            const body = document.getElementById('pantalla-interna');
+            const hSubtitle = document.getElementById('header-subtitle');
+            const header = document.getElementById('app-header');
+            const sDias = document.getElementById('selector-dias-container');
+            const secDia = document.getElementById('contenido-dia');
+            const secNoche = document.getElementById('contenido-noche');
+            const btnFase = document.getElementById('btn-fase');
+            const btnSiguiente = document.getElementById('btn-siguiente');
+            const fButton = document.getElementById('app-footer-button');
+            const navBar = document.getElementById('nav-bar-container');
+
+            if (esNoche) {
+                body.className = "w-full h-full rounded-[38px] overflow-hidden relative flex flex-col bg-zinc-950 text-white transition-colors duration-500";
+                header.className = "p-5 pt-10 flex justify-between items-center bg-zinc-950 border-b border-zinc-900 z-10 shrink-0 transition-colors duration-500";
+                hSubtitle.innerText = "Sintonización Nocturna";
+                hSubtitle.className = "text-[10px] uppercase tracking-widest text-indigo-400 font-bold block";
+                sDias.className = "bg-zinc-950 border-b border-zinc-900 p-3 flex justify-between overflow-x-auto no-scrollbar shrink-0 z-10";
+                secDia.classList.add('hidden');
+                secNoche.classList.remove('hidden');
+                btnFase.innerHTML = "<span>Ir al Día</span><span>☀️</span>";
+                btnFase.className = "px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-indigo-950/50 text-indigo-300 hover:bg-indigo-900 transition-all flex items-center space-x-1";
+                
+                fButton.className = "p-5 pt-0 bg-zinc-950 border-t border-zinc-950 shrink-0 z-10 transition-colors duration-500";
+                btnSiguiente.className = "w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-xs font-bold uppercase tracking-wider active:scale-98 transition-all shadow-lg shadow-indigo-600/20";
+                btnSiguiente.innerText = "Completar Noche y Avanzar 🌙";
+                navBar.className = "p-4 bg-zinc-950 border-t border-zinc-900 shrink-0 z-10 transition-colors duration-500";
+            } else {
+                body.className = "w-full h-full rounded-[38px] overflow-hidden relative flex flex-col bg-gray-50 text-gray-900 transition-colors duration-500";
+                header.className = "p-5 pt-10 flex justify-between items-center bg-white border-b border-gray-100 z-10 shrink-0 transition-colors duration-500";
+                hSubtitle.innerText = "Enfoque Diario";
+                hSubtitle.className = "text-[10px] uppercase tracking-widest text-amber-600 font-bold block";
+                sDias.className = "bg-white border-b border-gray-100 p-3 flex justify-between overflow-x-auto no-scrollbar shrink-0 z-10";
+                secDia.classList.remove('hidden');
+                secNoche.classList.add('hidden');
+                btnFase.innerHTML = "<span>Ir a la Noche</span><span>🌙</span>";
+                btnFase.className = "px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center space-x-1";
+                
+                fButton.className = "p-5 pt-0 bg-white border-t border-gray-100 shrink-0 z-10 transition-colors duration-500";
+                btnSiguiente.className = "w-full py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl text-xs font-bold uppercase tracking-wider active:scale-98 transition-all shadow-lg";
+                btnSiguiente.innerText = "Completar Día ☀️";
+                navBar.className = "p-4 bg-white border-t border-gray-100 shrink-0 z-10 transition-colors duration-500";
+            }
+        }
+
+        function setCalificacion(tipo) {
+            localStorage.setItem(`feel_dia_${diaActual}`, tipo);
+            limpiarCalificaciones();
+            const el = document.getElementById(`feel-${tipo}`);
+            if (el) {
+                el.className = "flex flex-col items-center p-2 rounded-2xl bg-indigo-600 border border-indigo-500 transition-all text-white scale-105 shadow-md shadow-indigo-600/30";
+                const label = el.querySelector('span:last-child');
+                if (label) label.className = "text-[9px] text-white font-bold mt-1";
+            }
+        }
+
+        function limpiarCalificaciones() {
+            const opciones = ['muy-mal', 'mal', 'normal', 'bien', 'excelente'];
+            opciones.forEach(opt => {
+                const el = document.getElementById(`feel-${opt}`);
+                if (el) {
+                    el.className = "flex flex-col items-center p-2 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 transition-all hover:bg-zinc-800";
+                    const label = el.querySelector('span:last-child');
+                    if (label) label.className = "text-[9px] text-gray-500 font-bold mt-1";
+                }
+            });
+        }
+
+        function cambiarSeccion(seccion) {
+            guardarInputsLocales();
+            seccionActiva = seccion;
+
+            document.getElementById('seccion-reto').classList.add('hidden');
+            document.getElementById('seccion-audios').classList.add('hidden');
+            document.getElementById('seccion-ia').classList.add('hidden');
+
+            const btns = ['reto', 'audios', 'ia'];
+            btns.forEach(btn => {
+                const el = document.getElementById(`nav-${btn}`);
+                el.className = "btn-nav-3d flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5 text-gray-400";
+            });
+
+            if (seccion === 'reto') {
+                document.getElementById('seccion-reto').classList.remove('hidden');
+                document.getElementById('selector-dias-container').classList.remove('hidden');
+                document.getElementById('app-header').classList.remove('hidden');
+                document.getElementById('app-footer-button').classList.remove('hidden');
+                document.getElementById('nav-reto').className = "btn-nav-3d active-dia flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5";
+            } else if (seccion === 'audios') {
+                document.getElementById('seccion-audios').classList.remove('hidden');
+                document.getElementById('selector-dias-container').classList.remove('hidden');
+                document.getElementById('app-header').classList.remove('hidden');
+                document.getElementById('app-footer-button').classList.add('hidden');
+                document.getElementById('nav-audios').className = "btn-nav-3d active-audios flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5";
+            } else if (seccion === 'ia') {
+                document.getElementById('seccion-ia').classList.remove('hidden');
+                document.getElementById('selector-dias-container').classList.add('hidden');
+                document.getElementById('app-header').classList.add('hidden');
+                document.getElementById('app-footer-button').classList.add('hidden');
+                document.getElementById('nav-ia').className = "btn-nav-3d active-ia flex-1 py-3 text-xs font-bold rounded-xl flex flex-col items-center justify-center space-y-0.5";
+                verificarOnboardingIA();
+            }
+        }
+
+        function avanzarPaso() {
+            guardarInputsLocales();
+            if (!esNoche) {
+                mostrarToast("Excelente rutina matutina. ¡Nos vemos en la noche para cerrar tu día! 🌙");
+                toggleFase();
+            } else {
+                if (diaActual < 7) {
+                    mostrarToast(`¡Día ${diaActual} completado! Desbloqueando Día ${diaActual + 1}...`);
+                    setTimeout(() => {
+                        cambiarDia(diaActual + 1);
+                        toggleFase();
+                    }, 1500);
+                } else {
+                    mostrarToast("🏆 ¡FELICIDADES! Has completado el Reto 7D de Reprogramación Financiera.");
+                }
+            }
+        }
+
+        // ==============================================
+        // MOTOR DE AUDIO (BINAURAL - WEB AUDIO API)
+        // ==============================================
+        function toggleAudioGen(tipo, freqHz) {
+            if (audioActivo === tipo) {
+                detenerAudioGen();
+                return;
+            }
+            detenerAudioGen();
+            audioActivo = tipo;
+
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                oscillatorL = audioContext.createOscillator();
+                oscillatorR = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+
+                const pannerL = audioContext.createStereoPanner ? audioContext.createStereoPanner() : null;
+                const pannerR = audioContext.createStereoPanner ? audioContext.createStereoPanner() : null;
+
+                oscillatorL.frequency.value = 100;
+                oscillatorR.frequency.value = 100 + freqHz;
+
+                oscillatorL.type = 'sine';
+                oscillatorR.type = 'sine';
+                gainNode.gain.value = 0.15; 
+
+                if (pannerL && pannerR) {
+                    pannerL.pan.value = -1;
+                    pannerR.pan.value = 1;
+                    oscillatorL.connect(pannerL).connect(gainNode);
+                    oscillatorR.connect(pannerR).connect(gainNode);
+                } else {
+                    oscillatorL.connect(gainNode);
+                    oscillatorR.connect(gainNode);
+                }
+
+                gainNode.connect(audioContext.destination);
+                oscillatorL.start(0);
+                oscillatorR.start(0);
+
+                document.getElementById(`btn-audio-${tipo}`).innerText = "◼";
+                document.getElementById(`btn-audio-${tipo}`).classList.add('bg-emerald-500', 'text-white');
+                mostrarToast(`Frecuencia sintonizada a ${freqHz}Hz. Usa auriculares 🎧`);
+            } catch(e) {
+                mostrarToast("El audio binaural no está soportado en este dispositivo.");
+            }
+        }
+
+        function detenerAudioGen() {
+            if (oscillatorL) { oscillatorL.stop(); oscillatorL.disconnect(); }
+            if (oscillatorR) { oscillatorR.stop(); oscillatorR.disconnect(); }
+            if (gainNode) { gainNode.disconnect(); }
+            if (audioContext) { audioContext.close(); }
+
+            const opciones = ['theta', 'alfa', 'solfeggio'];
+            opciones.forEach(opt => {
+                const btn = document.getElementById(`btn-audio-${opt}`);
+                if (btn) {
+                    btn.innerText = "▶";
+                    btn.className = "w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-xs text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-all font-bold";
+                }
+            });
+            audioActivo = null;
+        }
+
+        function toggleInAppBrowser(show) {
+            const browser = document.getElementById('inapp-browser');
+            if (show) browser.classList.remove('translate-y-full');
+            else browser.classList.add('translate-y-full');
+        }
+
+        // ==============================================
+        // AGENTE DE INTELIGENCIA ARTIFICIAL (MENTE IA)
+        // ==============================================
+        function verificarOnboardingIA() {
+            if (iaNombre) {
+                document.getElementById('ia-onboarding').classList.add('hidden');
+                document.getElementById('ia-chat-interface').classList.remove('hidden');
+                if (chatLog.length === 0) inicializarChatIA();
+            } else {
+                document.getElementById('ia-onboarding').classList.remove('hidden');
+                document.getElementById('ia-chat-interface').classList.add('hidden');
+            }
+        }
+
+        function guardarNombreIA() {
+            const input = document.getElementById('ia-name-input');
+            const nombre = input.value.trim();
+            if (nombre) {
+                iaNombre = nombre;
+                localStorage.setItem('abundancia_ia_nombre', nombre);
+                verificarOnboardingIA();
+            } else {
+                mostrarToast("Por favor escribe tu nombre.");
+            }
+        }
+
+        function inicializarChatIA() {
+            const bienvenida = `¡Hola, **${iaNombre}**! Eres bienvenido. Soy tu **ACTIVADOR DE ABUNDANCIA EN 7 D**, tu Coach de Inteligencia Artificial experto en Neurociencia Consciente, Psicología del Comportamiento e Identidad Financiera.
+
+Mi meta es guiarte para reprogramar tu mente, romper bloqueos financieros y pasar de la escasez a la expansión estratégica en un viaje de 7 días.
+
+Para activar tu sistema nervioso parasimpático y lograr calma rápida, dominaremos estas **4 técnicas de respiración consciente** (puedes completarlas en 60 segundos):
+
+1. **Respiración 4-7-8 (La técnica relajante)**:
+   Inhala por la nariz contando hasta 4, retén el aire contando hasta 7, y exhala lentamente por la boca haciendo ruido contando hasta 8.
+   
+2. **Respiración Cuadrada o en Caja (Box Breathing)**:
+   Inhala durante 4 segundos, retén a pulmón lleno 4 segundos, exhala suavemente por 4 segundos y mantén pulmones vacíos 4 segundos.
+
+3. **Respiración 4-6 (Calma mental)**:
+   Inhala profundamente por la nariz contando hasta 4 y exhala por la boca de forma lenta y controlada contando hasta 6.
+
+4. **Suspiro Cíclico (Liberación rápida)**:
+   Realiza una inhalación profunda por la nariz, haz una segunda inhalación corta extra al final para expandir pulmones y exhala lentamente con un suspiro.
+
+---
+**Comandos técnicos que puedes escribirme:**
+* \`/comenzar\` : Inicia el programa desde el Día 1.
+* \`/siguiente\` : Avanza manualmente al siguiente día.
+* \`/progreso\` : Resumen visual de tu reto y respuestas.
+* \`/ayuda\` : Ver los comandos del reto.
+
+Dime, **${iaNombre}**, ¿con qué bloqueo financiero o pensamiento limitante te gustaría que iniciemos hoy?`;
+
+            agregarMensajeChat('ia', bienvenida);
+        }
+
+        function agregarMensajeChat(remitente, texto) {
+            const container = document.getElementById('chat-messages');
+            const msgEl = document.createElement('div');
+            
+            let formatText = texto.replace(/\n/g, '<br>');
+            formatText = formatText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            if (remitente === 'usuario') {
+                msgEl.className = "flex justify-end";
+                msgEl.innerHTML = `
+                    <div class="bg-emerald-600 text-white rounded-2xl p-3.5 max-w-[85%] shadow-sm font-semibold text-xs leading-relaxed">
+                        ${formatText}
+                    </div>
+                `;
+            } else {
+                msgEl.className = "flex justify-start";
+                msgEl.innerHTML = `
+                    <div class="bg-white text-gray-800 rounded-2xl p-3.5 max-w-[85%] shadow-sm border border-gray-100 font-medium text-xs leading-relaxed">
+                        <span class="text-[9px] font-black text-emerald-600 block mb-1 uppercase tracking-wider">Coach Abundancia</span>
+                        ${formatText}
+                    </div>
+                `;
+            }
+
+            container.appendChild(msgEl);
+            container.scrollTop = container.scrollHeight;
+            chatLog.push({ remitente, texto });
+        }
+
+        function enviarMensajeChat() {
+            const input = document.getElementById('chat-input');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            agregarMensajeChat('usuario', texto);
+            input.value = '';
+
+            setTimeout(() => {
+                procesarRespuestaIA(texto);
+            }, 1000);
+        }
+
+        function checkKey(e) {
+            if (e.key === 'Enter') enviarMensajeChat();
+        }
+
+        function enviarComando(cmd) {
+            agregarMensajeChat('usuario', cmd);
+            setTimeout(() => {
+                procesarRespuestaIA(cmd);
+            }, 800);
+        }
+
+        function procesarRespuestaIA(input) {
+            const raw = input.toLowerCase().trim();
+            
+            if (raw.includes('/comenzar')) {
+                iaProgresoDia = 1;
+                cambiarDia(1);
+                agregarMensajeChat('ia', `Excelente decisión, **${iaNombre}**. He reseteado tu proceso al **Día 1 de 7** [■□□□□□□] (14%). ¿De qué estás agradecido hoy? Recuerda que agradecer reconfigura tu filtro cerebral.`);
+                return;
+            }
+
+            if (raw.includes('/siguiente')) {
+                if (iaProgresoDia >= 7) {
+                    agregarMensajeChat('ia', `¡Felicidades, **${iaNombre}**! Has completado el programa. Escribe \`/comenzar\` para un nuevo ciclo.`);
+                    return;
+                }
+                const completed = document.getElementById('chk-ejercicio').checked && document.getElementById('chk-desconexion').checked;
+                if (!completed) {
+                    agregarMensajeChat('ia', `Observo que aún no has completado las acciones de enfoque del **Día ${iaProgresoDia}**. **${iaNombre}**, respóndelas primero para asentar el neuroenfoque antes de continuar.`);
+                } else {
+                    iaProgresoDia++;
+                    cambiarDia(iaProgresoDia);
+                    const pct = Math.round((iaProgresoDia / 7) * 100);
+                    let bars = "■".repeat(iaProgresoDia) + "□".repeat(7 - iaProgresoDia);
+                    agregarMensajeChat('ia', `Avanzamos al **Día ${iaProgresoDia} de 7** [${bars}] (${pct}%). ¿Listo para recalibrar tu enfoque estratégico hoy?`);
+                }
+                return;
+            }
+
+            if (raw.includes('/progreso')) {
+                const pct = Math.round((iaProgresoDia / 7) * 100);
+                let bars = "■".repeat(iaProgresoDia) + "□".repeat(7 - iaProgresoDia);
+                agregarMensajeChat('ia', `Progreso de **${iaNombre}**:\n📈 **Día**: ${iaProgresoDia} de 7 [${bars}] (${pct}%).\n🧠 **Enfoque SARA**: Activo.\n🎯 **Recomendación**: Completa hoy tu obra de caridad para recordarle a tu mente subconsciente tu identidad de abundancia.`);
+                return;
+            }
+
+            if (raw.includes('/ayuda')) {
+                agregarMensajeChat('ia', `**Ayuda de Comandos**:\n• \`/comenzar\` - Reinicia el reto.\n• \`/siguiente\` - Avanza de día.\n• \`/progreso\` - Mira tu progreso.\n• \`/ayuda\` - Información de comandos.`);
+                return;
+            }
+
+            // Detector consciente de escasez y deudas
+            const disparadoresEscasez = ['no puedo', 'tengo deudas', 'ansiedad', 'miedo', 'dificil', 'escasez', 'crisis', 'estres', 'estresado', 'estresada', 'imposible', 'bloqueo'];
+            let detectado = false;
+            disparadoresEscasez.forEach(disp => {
+                if (raw.includes(disp)) detectado = true;
+            });
+
+            if (detectado) {
+                agregarMensajeChat('ia', `Entiendo tu sentir, **${iaNombre}**. La neurociencia nos enseña que el estrés financiero bloquea las decisiones prefrontales. Haz una respiración 4-7-8 ahora. Recuerda que ayudar y hacer una obra de caridad demuestra que te sobra abundancia. ¿Qué pequeña acción de dar puedes hacer hoy para desbloquearte?`);
+            } else {
+                agregarMensajeChat('ia', `Correcto, **${iaNombre}**. Desde nuestra Identidad Financiera, cada micro-acción fortalece una nueva narrativa. Avancemos en las tareas y rituales del día.`);
+            }
+        }
+    </script>
 </body>
 </html>
